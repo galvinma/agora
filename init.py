@@ -1,5 +1,5 @@
 import csv
-from hierdenc import cluster
+from hierdenc import hierdenc
 # Place data into map
 # {object ID : [NAME, Attributes...]}
 #
@@ -11,7 +11,7 @@ with open("datasets/soybean-large.data", mode= "r") as f:
         objects[count] = line
         count += 1
 
-clusters = cluster(objects)
+clusters = hierdenc(objects)
 
 # Print dictionary
 # for k,v in objects.items():
