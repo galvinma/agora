@@ -13,6 +13,6 @@ with open("datasets/soybean-large.data", mode= "r") as f:
 
 clusters = hierdenc(objects)
 
-# Print dictionary
-# for k,v in objects.items():
-#     print("Key: " + str(k) + " , and Value: " + str(v))
+for k,v in clusters.items():
+    for a,b in v.items():
+        print("Key: " + str(a) + " Value: " + str(b))
