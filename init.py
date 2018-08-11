@@ -5,6 +5,7 @@ from hierdenc import hierdenc
 #
 objects = {}
 count = 0
+print("Initializing data...")
 with open("datasets/soybean-large.data", mode= "r") as f:
     lines = csv.reader(f)
     for line in lines:

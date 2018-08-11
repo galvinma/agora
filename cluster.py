@@ -16,7 +16,9 @@ def assign(sort, clusters, r, cluster_id, associated_objects):
     assigned = []
     for i in sort:
         if i not in assigned:
-            # Create a new cluster centered at i
+            # Attempt to add point to an existing cluster
+
+            # If addition fails, create a new cluster centered at i
             clusters[i] = cluster_id
             assigned.append(i)
 
@@ -33,11 +35,11 @@ def assign(sort, clusters, r, cluster_id, associated_objects):
     return clusters, assigned, cluster_id
 
 
-def merge(clusters, r, m, cluster_id):
+def merge(objects, clusters, r, m, cluster_id):
     # Merge clusters within distance r.
     within_radius = m - r
-    for k,v in clusters.items():
-        for m,n in clusters.items():
+    for k,v in objects.items():
+        for m,n in objects.items():
             if m != k:
                 score = dissimilarity(v[1:], n[1:])
                 if score >= within_radius and n != v:

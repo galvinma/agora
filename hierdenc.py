@@ -20,12 +20,15 @@ def hierdenc(objects):
     for k,v in objects.items():
         unassigned.append(k)
 
+    # Create an empty dictionary for r = 0
+    clusters[r] = {}
+
     while r < m and proceed == bool(1):
         r += 1      # increase radius
         # Merge and calculate connectivity
         if len(clusters):
             # merge
-            clusters[r], cluster_id = merge(clusters[r-1], r, m, cluster_id)
+            clusters[r], cluster_id = merge(objects, clusters[r-1], r, m, cluster_id)
             # check connectivity score
             # current = connectivity(clusters, r)
             # if current <= connectivity:
@@ -37,8 +40,7 @@ def hierdenc(objects):
         sort = sorted(index.items(), key=itemgetter(1), reverse=True)
 
         # Assign new objects to clusters
-        clusters[r] = {}
-        clusters[r], assigned, cluster_id = assign(sort, clusters[r], r, cluster_id, associated_objects)
+        clusters[r], assigned, cluster_id = assign(sort, clusters[r-1], r, cluster_id, associated_objects)
 
         # Update unassigned list
         unassigned = update_unassigned(unassigned, assigned)
