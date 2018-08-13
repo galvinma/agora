@@ -9,6 +9,7 @@ def hierdenc(objects):
     print("Entering HIERDENC function...")
     clusters = {}               # radius : {object ID : cluster ID}
     mode = {}                   # cluster ID : [[attributes @ pos 0, attributes @ pos 1,...]]
+    mode_lookup = {}            # cluster ID : mode
     r = 0                       # radius of hypercubes
     cluster_id = 0              # cluster ID
     m = len(objects[0]) - 1     # number of attributes
@@ -26,7 +27,9 @@ def hierdenc(objects):
     # Create an empty dictionary for r = 0
     clusters[r] = {}
 
-    while r < 5 and proceed == bool(1):
+    while r < m and len(clusters[r])/n < 0.98 and proceed == bool(1):
+        print(len(clusters[r]))
+        print(n)
         r += 1      # increase radius
 
         # Update the index
@@ -34,18 +37,17 @@ def hierdenc(objects):
         sort = sorted(index.items(), key=itemgetter(1), reverse=True)
 
         # Assign new objects to clusters
-        clusters[r], assigned, cluster_id, mode = assign(sort, clusters[r-1], r, cluster_id, associated_objects, mode, objects, m)
+        clusters[r], assigned, cluster_id, mode, mode_lookup = assign(sort, clusters[r-1], r, cluster_id, associated_objects, mode, objects, m, mode_lookup)
 
         # Update unassigned list
         unassigned = update_unassigned(unassigned, assigned)
 
         # Merge and calculate connectivity
-        clusters[r], cluster_id = merge(objects, clusters[r], r, m, cluster_id)
+        clusters[r], cluster_id, mode, mode_lookup = merge(objects, clusters[r], r, m, cluster_id, mode_lookup, mode)
         # check connectivity score
         # current = connectivity(clusters, r)
         # if current <= connectivity:
         #     proceed = bool(0)
         #     break
 
-    print(mode)
     return clusters

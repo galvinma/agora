@@ -13,3 +13,8 @@ with open("datasets/soybean-large.data", mode= "r") as f:
         count += 1
 
 clusters = hierdenc(objects)
+
+for k,v in clusters.items():
+    print("Iteration: " + str(k))
+    for a,b in v.items():
+        print(str(a) + ":" + str(b))
