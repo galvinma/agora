@@ -1,3 +1,4 @@
+import collections
 from dissimilarity import dissimilarity
 #
 # clustering algorithm
@@ -9,7 +10,7 @@ def update_unassigned(unassigned, assigned):
             unassigned.remove(i)
     return unassigned
 
-def assign(sort, clusters, r, cluster_id, associated_objects):
+def assign(sort, clusters, r, cluster_id, associated_objects, mode, objects):
     # Starting with the densest object in index, assign a cluster.
     # Merge objects that are within distance r
     assigned = []
@@ -21,6 +22,7 @@ def assign(sort, clusters, r, cluster_id, associated_objects):
             # Attempt to add point to an existing cluster
             # If addition fails, create a new cluster centered at i
             clusters[i[0]] = clustcount
+            mode = find_mode(objects, clusters, clustcount)
             assigned.append(i[0])
 
             # Add associated_objects to current cluster
@@ -33,7 +35,7 @@ def assign(sort, clusters, r, cluster_id, associated_objects):
                         assigned.append(j)
             # Increment cluster_id
             clustcount += 1
-            
+
     return clusters, assigned, clustcount
 
 
@@ -44,6 +46,7 @@ def merge(objects, clusters, r, m, cluster_id):
     for k,v in clusters.items():
         for m,n in clusters.items():
             if m != k and v != n:
+                # Compare cluster modes to determine merge
                 score = dissimilarity(objects[k][1:], objects[m][1:])
                 if score >= within_radius:
                     # merge
@@ -57,6 +60,18 @@ def merge(objects, clusters, r, m, cluster_id):
                            clusters[a] = clustcount
     return clusters, clustcount
 
+def find_mode(objects, clusters, cluster):
+    temp = Counter()
+    objects = []
+    # Object ID : Cluster ID
+    for k,v in clusters.items():
+        if v == cluster:
+            objects.append(v)
+    for
+
+
+
+    return mode
 
 def connectivity(clusters, r):
     return
