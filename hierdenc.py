@@ -8,7 +8,7 @@ def hierdenc(objects):
     # Initial conditions
     print("Entering HIERDENC function...")
     clusters = {}               # radius : {object ID : cluster ID}
-    mode = {}
+    mode = {}                   # cluster ID : [[attributes @ pos 0, attributes @ pos 1,...]]
     r = 0                       # radius of hypercubes
     cluster_id = 0              # cluster ID
     m = len(objects[0]) - 1     # number of attributes
@@ -34,7 +34,7 @@ def hierdenc(objects):
         sort = sorted(index.items(), key=itemgetter(1), reverse=True)
 
         # Assign new objects to clusters
-        clusters[r], assigned, cluster_id, mode = assign(sort, clusters[r-1], r, cluster_id, associated_objects, mode, objects)
+        clusters[r], assigned, cluster_id, mode = assign(sort, clusters[r-1], r, cluster_id, associated_objects, mode, objects, m)
 
         # Update unassigned list
         unassigned = update_unassigned(unassigned, assigned)
@@ -47,6 +47,5 @@ def hierdenc(objects):
         #     proceed = bool(0)
         #     break
 
-        for k,v in clusters[r].items():
-            print(str(k)+":"+str(v))
+    print(mode)
     return clusters

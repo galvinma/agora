@@ -10,19 +10,21 @@ def update_unassigned(unassigned, assigned):
             unassigned.remove(i)
     return unassigned
 
-def assign(sort, clusters, r, cluster_id, associated_objects, mode, objects):
+def assign(sort, clusters, r, cluster_id, associated_objects, mode, objects, m):
     # Starting with the densest object in index, assign a cluster.
     # Merge objects that are within distance r
     assigned = []
     clustcount = cluster_id
     for i in sort:
         if i[0] not in assigned and i[0] not in clusters and i[1] > 0:
+            # Create a new cluster
             print("Assigning object " + str(i[0]) + " with density count "
             + str(i[1]) + " to cluster " + str(clustcount))
             # Attempt to add point to an existing cluster
             # If addition fails, create a new cluster centered at i
             clusters[i[0]] = clustcount
-            mode = find_mode(objects, clusters, clustcount)
+            mode = create_cluster_counter(m, clustcount, mode)
+            mode = update_mode(i[0], objects, clustcount, mode)
             assigned.append(i[0])
 
             # Add associated_objects to current cluster
@@ -32,11 +34,12 @@ def assign(sort, clusters, r, cluster_id, associated_objects, mode, objects):
                     if j not in assigned:
                         print("Assigning object " + str(j) + " to cluster " + str(clustcount))
                         clusters[j] = clustcount
+                        mode = update_mode(j, objects, clustcount, mode)
                         assigned.append(j)
             # Increment cluster_id
             clustcount += 1
 
-    return clusters, assigned, clustcount
+    return clusters, assigned, clustcount, mode
 
 
 def merge(objects, clusters, r, m, cluster_id):
@@ -60,17 +63,17 @@ def merge(objects, clusters, r, m, cluster_id):
                            clusters[a] = clustcount
     return clusters, clustcount
 
-def find_mode(objects, clusters, cluster):
-    temp = Counter()
-    objects = []
-    # Object ID : Cluster ID
-    for k,v in clusters.items():
-        if v == cluster:
-            objects.append(v)
-    for
+# function creates list of empty lists for mode calculation
+def create_cluster_counter(m, cluster, mode):
+    attributes = []
+    for i in range(m):
+        attributes.append([])
+    mode[cluster] = attributes
+    return mode
 
-
-
+def update_mode(id, objects, cluster, mode):
+    for i, j in zip(objects[id][1:], mode[cluster]):
+        j.append(i)
     return mode
 
 def connectivity(clusters, r):
