@@ -17,23 +17,16 @@ def hierdenc(objects):
     unassigned = []             # list of objects unassigned to a cluster
     proceed = bool(1)
 
+    print("Clustering " + str(n) + " objects with " + str(m) + " attributes.")
+
     for k,v in objects.items():
         unassigned.append(k)
 
     # Create an empty dictionary for r = 0
     clusters[r] = {}
 
-    while r < m and proceed == bool(1):
+    while r < 5 and proceed == bool(1):
         r += 1      # increase radius
-        # Merge and calculate connectivity
-        if len(clusters):
-            # merge
-            clusters[r], cluster_id = merge(objects, clusters[r-1], r, m, cluster_id)
-            # check connectivity score
-            # current = connectivity(clusters, r)
-            # if current <= connectivity:
-            #     proceed = bool(0)
-            #     break
 
         # Update the index
         index, associated_objects = hierdenc_index(unassigned, objects, r)
@@ -45,4 +38,14 @@ def hierdenc(objects):
         # Update unassigned list
         unassigned = update_unassigned(unassigned, assigned)
 
+        # Merge and calculate connectivity
+        clusters[r], cluster_id = merge(objects, clusters[r], r, m, cluster_id)
+        # check connectivity score
+        # current = connectivity(clusters, r)
+        # if current <= connectivity:
+        #     proceed = bool(0)
+        #     break
+
+        for k,v in clusters[r].items():
+            print(str(k)+":"+str(v))
     return clusters

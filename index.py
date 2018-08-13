@@ -5,7 +5,9 @@ from dissimilarity import dissimilarity
 #
 def hierdenc_index(unassigned, objects, r):
     # objects[0] includes name of object as well as attributes
+    print("Creating HIERDENC Index for unassigned objects using radius " + str(r))
     within_radius = len(objects[0]) - 1 - r
+    print("Objects with a minimum similarily score of " + str(within_radius) + " are considered neighbors.")
     index = {}
     associated_objects = {}
     # dissimilarity_matrix = np.zeros((len(objects), len(objects)))
