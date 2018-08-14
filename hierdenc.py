@@ -46,6 +46,8 @@ def hierdenc(objects):
         #     proceed = bool(0)
         #     break
 
-        for k,v in clusters[r].items():
-            print(str(k)+":"+str(v))
+    # Assign remaining clusters
+    for i in unassigned:
+        clusters[r][i] = cluster_id
+        cluster_id +=1
     return clusters
