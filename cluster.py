@@ -7,33 +7,30 @@ from dissimilarity import dissimilarity
 def assign(sort, clusters, r, cluster_id, associated_objects, mode, objects, m, mode_lookup):
     # Starting with the densest object in index, assign a cluster.
     # Merge objects that are within distance r
+    within_radius = m - r
     assigned = []
     clustcount = cluster_id
     for i in sort:
         if i[0] not in assigned and i[0] not in clusters and i[1] > 0:
-            # Create a new cluster
-            # print("Assigning object " + str(i[0]) + " with density count "
-            # + str(i[1]) + " to cluster " + str(clustcount))
             # Attempt to add point to an existing cluster
-            # If addition fails, create a new cluster centered at i
-            clusters[i[0]] = clustcount
-            mode = create_cluster_counter(m, clustcount, mode)
-            mode = update_mode(i[0], objects, clustcount, mode)
-            mode_lookup = calculate_mode(mode_lookup, mode, clustcount)
-            assigned.append(i[0])
-
-            # Add associated_objects to current cluster
-            if i[0] in associated_objects:
-                associated = associated_objects[i[0]]
-                for j in associated:
-                    if j not in assigned:
-                        # print("Assigning object " + str(j) + " to cluster " + str(clustcount))
-                        clusters[j] = clustcount
-                        mode = update_mode(j, objects, clustcount, mode)
-                        mode_lookup = calculate_mode(mode_lookup, mode, clustcount)
-                        assigned.append(j)
-            # Increment cluster_id
-            clustcount += 1
+            for r,s in mode_lookup.items():
+                score = dissimilarity(objects[i[0]][1:], s)
+                if score >= within_radius:
+                    clusters[i[0]] = r
+                    mode = update_mode(i[0], objects, r, mode)
+                    mode_lookup = calculate_mode(mode_lookup, mode, r)
+                    assigned.append(i[0])
+                    assigned, clusters, mode, mode_lookup = add_associated(i[0], associated_objects, assigned, r, clusters, mode, mode_lookup, objects)
+            # Else create a new cluster
+            if i[0] not in assigned:
+                clusters[i[0]] = clustcount
+                mode = create_cluster_counter(m, clustcount, mode)
+                mode = update_mode(i[0], objects, clustcount, mode)
+                mode_lookup = calculate_mode(mode_lookup, mode, clustcount)
+                assigned.append(i[0])
+                assigned, clusters, mode, mode_lookup = add_associated(i[0], associated_objects, assigned, clustcount, clusters, mode, mode_lookup, objects)
+                # Increment cluster_id
+                clustcount += 1
 
     return clusters, assigned, clustcount, mode, mode_lookup
 
@@ -60,6 +57,20 @@ def merge(objects, clusters, r, m, cluster_id, mode_lookup, mode):
                     mode_lookup = calculate_mode(mode_lookup, mode, clustcount)
                     clustcount += 1
     return clusters, clustcount, mode, mode_lookup
+
+def add_associated(object, associated_objects, assigned, cluster, clusters, mode, mode_lookup, objects):
+    # Add associated_objects to current cluster
+    if object in associated_objects:
+        associated = associated_objects[object]
+        for obj in associated:
+            if obj not in assigned:
+                # print("Assigning object " + str(j) + " to cluster " + str(clustcount))
+                clusters[obj] = cluster
+                mode = update_mode(obj, objects, cluster, mode)
+                mode_lookup = calculate_mode(mode_lookup, mode, cluster)
+                assigned.append(obj)
+    return assigned, clusters, mode, mode_lookup
+
 
 def update_unassigned(unassigned, assigned):
     for i in assigned:

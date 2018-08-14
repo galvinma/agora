@@ -27,7 +27,7 @@ def hierdenc(objects):
     # Create an empty dictionary for r = 0
     clusters[r] = {}
 
-    while r < m and len(clusters[r])/n < 0.98 and proceed == bool(1):
+    while r < m and len(clusters[r])/n < 0.99 and proceed == bool(1):
         print(len(clusters[r]))
         print(n)
         r += 1      # increase radius
@@ -50,4 +50,9 @@ def hierdenc(objects):
         #     proceed = bool(0)
         #     break
 
-    return clusters
+    # Assign remaining clusters
+    for i in unassigned:
+        clusters[r][i] = cluster_id
+        cluster_id +=1
+
+    return clusters, mode_lookup
